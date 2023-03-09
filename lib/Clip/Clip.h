@@ -18,8 +18,11 @@ class Clip {
         Clip(ushort type, uint length);
         Clip(ushort type);
         Clip();
+
+        bool is_active;
+
+        void show();
     private:
-        bool _active;
         ushort _type; 
         uint _length; 
 };
