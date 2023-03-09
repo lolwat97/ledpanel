@@ -40,6 +40,7 @@ void setup() {
   server.begin();
 }
 
+// Function to process the request. Gets full request text, returns whatever needs to be returned to the webserver client
 String respond(String request){
   if(request.indexOf("GET /fuck ") >= 0)
     return header_ok + "fuck!";
@@ -47,22 +48,31 @@ String respond(String request){
     return header_ok + page_ok;
   else
     return header_404 + page_404;
+  
+  // TODO: Add code to switch active status of the clips
+  // TODO: Change clip type
+  // TODO: Change clip length
 }
 
 void loop() {
+  // Do we have a client on the webserver?
   WiFiClient client = server.available();
   if(client){
+    // Don't know what this is, but seems important
     while(!client.available())
       delay(1);
     Serial.println("New client!");
     
+    // Get full request and pass it on to processing function
     String request = client.readStringUntil('\r');
     Serial.print("Request is: ");
     Serial.println(request);
     String response = respond(request);
 
+    // Return the response to client
     client.print(response);
     Serial.println("Sent response to client");
     Serial.println("");
   }
+  // TODO: Add code to monitor clip time and switch active clips
 }

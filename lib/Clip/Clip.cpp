@@ -1,5 +1,6 @@
 #include <Clip.h>
 
+// Default length of a clip in ms
 #define DEFAULT_LENGTH 1000
 
 Clip::Clip(ushort type, uint length, bool active) {

@@ -3,12 +3,15 @@
 
 #include <Arduino.h>
 
+// Clip types: text, gif (animated image), static image
+// TODO: think of other types
 enum clip_type{
     clip_text,
     clip_gif,
     clip_image
 };
 
+// Clip class, use this as a parent class?
 class Clip {
     public:
         Clip(ushort type, uint length, bool active);

@@ -3,4 +3,9 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+
 lib/WiFi_settings/WiFi_settings.h
+
+lib/README
+include/README
+test/README

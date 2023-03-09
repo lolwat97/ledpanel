@@ -1,15 +1,20 @@
 #include <Arduino.h>
 
+// This is used by all headers
 const String header_shared = "Content-Type: text/html\r\n"
                 "Connection: close\r\n"
                 "\r\n";
 
+// 200
 const String header_ok = "HTTP/1.1 200 OK\r\n" + header_shared;
 
+// 404
 const String header_404 = "HTTP/1.1 404 Page Not Found\r\n" + header_shared;
 
+// 503 (not used now)
 const String header_503 = "HTTP/1.1 503 Internal Server Error\r\n" + header_shared;
 
+// 200
 const String page_ok =  "<!DOCTYPE HTML>\r\n"
                   "<html>\r\n"
                   "<head>\r\n"
@@ -20,6 +25,7 @@ const String page_ok =  "<!DOCTYPE HTML>\r\n"
                   "</body>\r\n"
                   "</html>\r\n";
 
+// 404
 const String page_404 = "<!DOCTYPE HTML>\r\n"
                   "<html>\r\n"
                   "<head>\r\n"
@@ -30,6 +36,7 @@ const String page_404 = "<!DOCTYPE HTML>\r\n"
                   "</body>\r\n"
                   "</html>\r\n";
 
+// 503 (not used now)
 const String page_503 = "<!DOCTYPE HTML>\r\n"
                   "<html>\r\n"
                   "<head>\r\n"
