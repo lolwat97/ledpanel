@@ -66,9 +66,9 @@ String respond(String request){
         Serial.printf("Activating clip %d\n", clip_number);
         clips[clip_number].is_active = true;
         return header_ok + "Clip " + String(clip_number) + " is now active!";
-      } else 
-        Serial.printf("Invalid clip number %d\n", clip_number);
-        return header_404 + "Invalid clip number.";
+      } 
+      Serial.printf("Invalid clip number %d\n", clip_number);
+      return header_404 + "Invalid clip number.";
     }
 
     // Deactivate a clip
@@ -79,9 +79,9 @@ String respond(String request){
         Serial.printf("Deactivating clip %d\n", clip_number);
         clips[clip_number].is_active = false;
         return header_ok + "Clip " + String(clip_number) + " is now not active!";
-      } else 
-        Serial.printf("Invalid clip number %d\n", clip_number);
-        return header_404 + "Invalid clip number.";
+      } 
+      Serial.printf("Invalid clip number %d\n", clip_number);
+      return header_404 + "Invalid clip number.";
     }
 
     return header_404 + page_404;
@@ -89,7 +89,6 @@ String respond(String request){
 
   // We don't support non-GET yet, just throw an internal server error, fuck it
   return header_503 + page_503;
-  // TODO: Add code to switch active status of the clips
   // TODO: Change clip type
   // TODO: Change clip length
 }
