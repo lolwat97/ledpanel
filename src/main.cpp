@@ -11,7 +11,8 @@
 // No. of clips in memory
 // Clip is one screen with info/gif/image etc. with specified length, can be enabled or disabled
 #define CLIP_COUNT 4
-Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, true), Clip(clip_image, 1000, true), Clip(clip_gif, 1000, true), Clip(clip_text, 1000, false)};
+//Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, true), Clip(clip_image, 1000, true), Clip(clip_gif, 1000, true), Clip(clip_text, 1000, false)};
+Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, false), Clip(clip_image, 1000, false), Clip(clip_gif, 1000, false), Clip(clip_text, 1000, false)};
 ushort current_clip = 0;
 
 // Define these in WiFi_settings.h
@@ -35,7 +36,8 @@ void setup() {
     delay(500);
     digitalWrite(LED, LOW);
   };
-  Serial.println("Connected!");
+  Serial.print("Connected, my IP is ");
+  Serial.println(WiFi.localIP());
   digitalWrite(LED, LOW);
 
   server.begin();
@@ -43,13 +45,50 @@ void setup() {
 
 // Function to process the request. Gets full request text, returns whatever needs to be returned to the webserver client
 String respond(String request){
-  if(request.indexOf("GET /fuck ") >= 0)
-    return header_ok + "fuck!";
-  else if(request.indexOf("GET / ") >= 0)
-    return header_ok + page_ok;
-  else
+  // Strip the HTTP from the end of the string
+  if(request.indexOf("HTTP/1.1") != -1)
+    request.replace(" HTTP/1.1",""); // TODO: This is bad, make this respect other HTTP versions!
+
+  // If the request is GET
+  if(request.indexOf("GET ") != -1){
+    // Strip the GET
+    request.replace("GET ", "");
+
+    // Debug stuff
+    Serial.print("Stripped request is: ");
+    Serial.println(request);
+
+    // Activate a clip
+    if(request.indexOf("/activate/") == 0){
+      request.replace("/activate/", "");
+      int clip_number = request.toInt();
+      if(clip_number >= 0 && clip_number < CLIP_COUNT){
+        Serial.printf("Activating clip %d\n", clip_number);
+        clips[clip_number].is_active = true;
+        return header_ok + "Clip " + String(clip_number) + " is now active!";
+      } else 
+        Serial.printf("Invalid clip number %d\n", clip_number);
+        return header_404 + "Invalid clip number.";
+    }
+
+    // Deactivate a clip
+    if(request.indexOf("/deactivate/") == 0){
+      request.replace("/deactivate/", "");
+      int clip_number = request.toInt();
+      if(clip_number >= 0 && clip_number < CLIP_COUNT){
+        Serial.printf("Deactivating clip %d\n", clip_number);
+        clips[clip_number].is_active = false;
+        return header_ok + "Clip " + String(clip_number) + " is now not active!";
+      } else 
+        Serial.printf("Invalid clip number %d\n", clip_number);
+        return header_404 + "Invalid clip number.";
+    }
+
     return header_404 + page_404;
-  
+  } 
+
+  // We don't support non-GET yet, just throw an internal server error, fuck it
+  return header_503 + page_503;
   // TODO: Add code to switch active status of the clips
   // TODO: Change clip type
   // TODO: Change clip length
