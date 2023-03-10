@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
+#include <led_panel.h>
+
 #include <Clip.h>
 #include <HTTP_text.h>
 #include <WiFi_settings.h>
@@ -8,8 +10,8 @@
 // LED indicator pin
 #define LED 4
 
-// No. of clips in memory
-// Clip is one screen with info/gif/image etc. with specified length, can be enabled or disabled
+// No. of clips used
+// Clip is one screen with text/gif/image etc. with specified length, can be enabled or disabled
 #define CLIP_COUNT 4
 //Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, true), Clip(clip_image, 1000, true), Clip(clip_gif, 1000, true), Clip(clip_text, 1000, false)};
 Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, false), Clip(clip_image, 1000, false), Clip(clip_gif, 1000, false), Clip(clip_text, 1000, false)};
@@ -22,12 +24,18 @@ const char* password = WIFI_PASSWORD;
 // Webserver on HTTP port
 WiFiServer server(80);
 
+// Pointer to the screen object
+void* screenptr = nullptr;
+
 void setup() {
   Serial.begin(9600);
 
   pinMode(LED, OUTPUT);
 
-  Serial.println("Booted, connecting to Wi-Fi");
+  Serial.println("Setting up the screen...");
+  screenptr = setup_screen();
+
+  Serial.println("Connecting to Wi-Fi");
   WiFi.begin(ssid, password);
   while(WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -65,6 +73,7 @@ String respond(String request){
       if(clip_number >= 0 && clip_number < CLIP_COUNT){
         Serial.printf("Activating clip %d\n", clip_number);
         clips[clip_number].is_active = true;
+        current_clip = clip_number;
         return header_ok + "Clip " + String(clip_number) + " is now active!";
       } 
       Serial.printf("Invalid clip number %d\n", clip_number);
@@ -79,6 +88,18 @@ String respond(String request){
         Serial.printf("Deactivating clip %d\n", clip_number);
         clips[clip_number].is_active = false;
         return header_ok + "Clip " + String(clip_number) + " is now not active!";
+      } 
+      Serial.printf("Invalid clip number %d\n", clip_number);
+      return header_404 + "Invalid clip number.";
+    }
+
+    if(request.indexOf("/skipto/") == 0){
+      request.replace("/skipto/", "");
+      int clip_number = request.toInt();
+      if(clip_number >= 0 && clip_number < CLIP_COUNT){
+        Serial.printf("Skipping to clip %d\n", clip_number);
+        current_clip = clip_number;
+        return header_ok + "Skipped to clip " + String(clip_number);
       } 
       Serial.printf("Invalid clip number %d\n", clip_number);
       return header_404 + "Invalid clip number.";
