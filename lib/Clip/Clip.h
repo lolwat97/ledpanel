@@ -25,6 +25,10 @@ class Clip {
     private:
         ushort _type; 
         uint _length; 
+
+        void show_text();
+        void show_gif();
+        void show_image();
 };
 
 #endif

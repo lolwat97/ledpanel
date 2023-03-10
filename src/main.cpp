@@ -11,7 +11,7 @@
 // No. of clips in memory
 // Clip is one screen with info/gif/image etc. with specified length, can be enabled or disabled
 #define CLIP_COUNT 4
-Clip clips[CLIP_COUNT];
+Clip clips[CLIP_COUNT] = {Clip(clip_text, 1000, true), Clip(clip_image, 1000, true), Clip(clip_gif, 1000, true), Clip(clip_text, 1000, false)};
 ushort current_clip = 0;
 
 // Define these in WiFi_settings.h
@@ -39,12 +39,6 @@ void setup() {
   digitalWrite(LED, LOW);
 
   server.begin();
-
-  ////////
-  // debugging code, remove later
-  ////////
-  clips[0].is_active = true;
-
 }
 
 // Function to process the request. Gets full request text, returns whatever needs to be returned to the webserver client
