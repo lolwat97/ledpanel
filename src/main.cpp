@@ -139,7 +139,7 @@ void loop() {
 
   if(clips[current_clip].is_active){
     Serial.printf("Showing clip %d: \n", current_clip);
-    clips[current_clip].show();
+    clips[current_clip].show(screenptr);
   }
   current_clip = (current_clip+1)%CLIP_COUNT;
 }

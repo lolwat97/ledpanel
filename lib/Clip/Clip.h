@@ -21,14 +21,14 @@ class Clip {
 
         bool is_active;
 
-        void show();
+        void show(void* screenptr);
     private:
         ushort _type; 
         uint _length; 
 
-        void show_text();
-        void show_gif();
-        void show_image();
+        void show_text(void* screenptr);
+        void show_gif(void* screenptr);
+        void show_image(void* screenptr);
 };
 
 #endif
